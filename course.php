@@ -16,6 +16,8 @@ require_once "db/courses/show.php";
 <body>
     <?php require_once "components/header.php"; ?>
     <?php print_r($course); ?>
+    <?php require_once "db/courses/check-bid.php"; ?>
+    <?php if($isAvailable): ?>
     <form action="db/bids/create.php" method="post">
         <?php if (isset($_SESSION['user_login'])): ?>
             <input type="hidden" name="user" value="<?= htmlspecialchars($_SESSION['user_id']) ?>">
@@ -23,7 +25,7 @@ require_once "db/courses/show.php";
         <input type="hidden" name="course" value="<?= htmlspecialchars($course['course_id']) ?>">
         <button type="submit">Записаться на курс</button>
     </form>
-
+    <?php else: echo ""; endif; ?>
 </body>
 
 </html>
