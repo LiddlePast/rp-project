@@ -1,5 +1,7 @@
 <?php
 session_start();
+$headers = getallheaders();
+$referer = $headers['Referer'] ?? '';
 if (isset($_SESSION['user_login']) && $_SESSION['user_login'] != '') {
     header('Location: /index.php');
     exit;
@@ -17,6 +19,7 @@ if (isset($_SESSION['user_login']) && $_SESSION['user_login'] != '') {
   <main class="main">
     <div class="container">
       <form action="/auth/login.php" method="post">
+        <input type="hidden" name="referer" value="<?= htmlspecialchars($referer) ?>">
         <div class="form-item">
           <label for="login" class="form__label">Логин</label>
           <input type="text" class="form__input" id="login" name="login" required value="<?= isset($_SESSION['input']['login']) ? $_SESSION['input']['login'] : '' ?>">

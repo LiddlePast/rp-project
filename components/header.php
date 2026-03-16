@@ -18,6 +18,9 @@
                 </li>
                 <?php else: ?>
                 <li class="menu-list__item">
+                    <a href="profile.php" class="menu-list__link">Профиль</a>
+                </li>
+                <li class="menu-list__item">
                     <form action="/auth/logout.php" method="post">
                         <button type="submit">Выход</button>
                     </form>

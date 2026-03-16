@@ -34,8 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $_SESSION['user_email'] = $data['email'];
             $_SESSION['user_login'] = $login;
             $_SESSION['user_role'] = 'user';
-            header("Location: /index.php");
-            exit;
+            if ($_POST['referer']) {
+                $referer = $_POST['referer'];
+                if (!preg_match('/^https:\/\/rp1\/course\.php\?course=/u', $referer, $matches)) {
+                    header("Location: /profile.php");
+                    exit;
+                } else {
+                    header("Location: $referer");
+                    exit;
+                }
+            } else {
+                header("Location: /index.php");
+                exit;
+            }
         } else {
             session_start();
             $_SESSION['errors']['login'] = "Неверный логин или пароль";
