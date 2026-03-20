@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT user_id, email, login, password FROM users WHERE login = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT user_id, email, login, password, role FROM users WHERE login = ? LIMIT 1");
     $stmt->execute([$login]);
     if ($data = $stmt->fetch()) {
         // ... ИЗМЕНИТЬ
@@ -33,8 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $_SESSION['user_id'] = $data['user_id'];
             $_SESSION['user_email'] = $data['email'];
             $_SESSION['user_login'] = $login;
-            $_SESSION['user_role'] = 'user';
-            if ($_POST['referer']) {
+            $_SESSION['user_role'] = $data['role'];
+            if ($data['role'] === 'admin') {
+                header("Location: /admin/dashboard.php");
+                exit;
+            } elseif ($_POST['referer']) {
                 $referer = $_POST['referer'];
                 if (!preg_match('/^https:\/\/rp1\/course\.php\?course=/u', $referer, $matches)) {
                     header("Location: /profile.php");
