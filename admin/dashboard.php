@@ -17,6 +17,20 @@ if (isset($_SESSION['user_role']) && $_SESSION['user_role'] !== 'admin') {
 </head>
 <body>
   <?php require_once __DIR__ . "/../components/header.php" ?>
+  <?php 
+  if (isset($_SESSION['errors'])):
+  ?>
+  <div class="alerts">
+    <ul class="alerts__list">
+    <?php foreach ($_SESSION['errors'] as $error): ?>
+      <li class="alerts__item"><?= $error ?></li>
+    <?php endforeach; ?>
+    </ul>
+  </div>
+  <?php
+  unset($_SESSION['errors']);
+  endif;
+  ?>
   <?php if (isset($_SESSION['query_success'])): ?>
     <ul class="status">
       <li><?= $_SESSION['query_success'] ?></li>
@@ -29,6 +43,7 @@ if (isset($_SESSION['user_role']) && $_SESSION['user_role'] !== 'admin') {
   <?php unset($_SESSION['query_error']); endif; ?>
   <main class="main">
     <div class="control">
+      <?php require_once "./create_course.php" ?>
       <?php require_once "./courses.php" ?>
     </div>
   </main>

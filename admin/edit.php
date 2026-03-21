@@ -13,7 +13,7 @@ if (!$course_id) {
   exit;
 }
 require_once __DIR__ . "/../db/config.php";
-$stmt = $pdo->prepare("SELECT course_id, name, description, price, dates, created_at, status FROM courses WHERE course_id = ? LIMIT 1");
+$stmt = $pdo->prepare("SELECT course_id, name, description, price, dates, created_at, status, deleted_at FROM courses WHERE course_id = ? LIMIT 1");
 $stmt->execute([$course_id]);
 $course_data = $stmt->fetch();
 if (!$course_data) {
@@ -77,14 +77,22 @@ if (!$course_data) {
     </div>
     <button type="submit">Изменить</button>
   </form>
-
-  <form action="delete_course" method="post">
+  <?php if (!$course_data['deleted_at']): ?>
+  <form action="delete_course" method="post" name="delete_course">
     <input type="hidden" name="course" value="<?= $course_data['course_id'] ?>">
     <button type="submit">❌</button>
   </form>
-  <script>
-    const DELETE_FORM = document.forms[2];
+  <?php else: ?>
+  <form action="restore_course" method="post" name="restore_course">
+    <input type="hidden" name="course" value="<?= $course_data['course_id'] ?>">
+    <button type="submit">✅</button>
+  </form>
+  <?php endif; ?>
 
+  <script>
+    const DELETE_FORM = document.forms['delete_course'];
+    const RESTORE_FORM = document.forms['restore_course'];
+    
     async function deleteData(course_id) {
       const response = await fetch("https://rp1/admin/delete_course.php", {
         method: 'POST',
@@ -98,12 +106,43 @@ if (!$course_data) {
       return await response.json();
     }
 
-    DELETE_FORM.addEventListener('submit', (e) => {
+    async function restoreData(course_id) {
+      const response = await fetch("https://rp1/admin/restore_course.php", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          course: course_id
+        })
+      });
+      return await response.json();
+    }
+
+    DELETE_FORM?.addEventListener('submit', (e) => {
       e.preventDefault();
       let deleteRow = confirm("Удалить запись?");
       const course_id = DELETE_FORM.children[0].value;
       if (deleteRow) {
         deleteData(course_id)
+          .then(res => {
+            console.log(res)
+            if (res.success) {
+              document.location.href = "https://rp1/admin/dashboard.php";
+            }
+          })
+          .catch(err => console.log(err))
+      } else {
+        return;
+      }
+    })
+
+    RESTORE_FORM?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let restoreRow = confirm("Восстановить запись?");
+      const course_id = RESTORE_FORM.children[0].value;
+      if (restoreRow) {
+        restoreData(course_id)
           .then(res => {
             console.log(res)
             if (res.success) {
