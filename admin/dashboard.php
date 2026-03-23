@@ -45,6 +45,7 @@ if (isset($_SESSION['user_role']) && $_SESSION['user_role'] !== 'admin') {
     <div class="control">
       <?php require_once "./create_course.php" ?>
       <?php require_once "./courses.php" ?>
+      <?php require_once "./bids.php" ?>
     </div>
   </main>
 </body>
