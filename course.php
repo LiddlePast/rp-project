@@ -15,6 +15,7 @@ require_once "db/courses/show.php";
 
 <body>
     <?php require_once "components/header.php"; ?>
+    <?php print_r($course_data) ?>
     <h1><?= $course_data['name'] ?></h1>
     <p><?= $course_data['description'] ?></p>
     <p><?= $course_data['price'] ?></p>
@@ -22,6 +23,7 @@ require_once "db/courses/show.php";
 
     <?php require_once "db/courses/check-bid.php"; ?>
     <?php if($_SESSION['user_role'] !== 'admin'): ?>
+    <?php if($course_data['status'] !== 'ended'): ?>
     <?php if($isAvailable): ?>
     <form action="db/bids/create.php" method="post">
         <?php if (isset($_SESSION['user_login'])): ?>
@@ -31,6 +33,15 @@ require_once "db/courses/show.php";
         <button type="submit">Записаться на курс</button>
     </form>
     <?php else: echo "<p>Вы записаны на курс</p>"; endif; ?>
+    <?php else: ?>
+        <p>Напишите отзыв</p>
+        <form action="db/courses/review.php" method="post">
+            <input type="hidden" name="course_id" value="<?= $course_data['course_id'] ?>">
+            <label for="review">Отзыв</label>
+            <textarea name="review" id="review"></textarea>
+            <button type="submit">Оставить отзыв</button>
+        </form>
+    <?php endif; ?>
     <?php endif; ?>
     <?php 
         if ($reviews && count($reviews) > 0) {
