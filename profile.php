@@ -11,6 +11,7 @@ if (!isset($_SESSION['user_login']) || $_SESSION['user_login'] == '') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Профиль</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
   <?php require_once "components/header.php" ?>
